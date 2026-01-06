@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Registration</h2>
+        <form method="post" action="{{ url_for('student_register') }}">
+            <label for="student_id">Student ID</label>
+            <input type="number" id="student_id" name="student_id" value="{{ student_id or '' }}" readonly required>
+
+            <label for="student_name">Name</label>
+            <input type="text" id="student_name" name="student_name" placeholder="Enter your name" required>
+
+            <label for="cgpa">CGPA (0-10)</label>
+            <input type="number" id="cgpa" name="cgpa" step="0.01" min="0" max="10" required>
+
+            <label for="coding_skill">Coding Skill (0-10)</label>
+            <input type="number" id="coding_skill" name="coding_skill" step="0.01" min="0" max="10" required>
+
+            <label for="communication_skill">Communication Skill (0-10)</label>
+            <input type="number" id="communication_skill" name="communication_skill" step="0.01" min="0" max="10" required>
+
+            <label for="aptitude_skill">Aptitude Skill (0-10)</label>
+            <input type="number" id="aptitude_skill" name="aptitude_skill" step="0.01" min="0" max="10" required>
+
+            <label for="problem_solving">Problem Solving Skill (0-10)</label>
+            <input type="number" id="problem_solving" name="problem_solving" step="0.01" min="0" max="10" required>
+
+            <label for="projects_count">Number of Projects</label>
+            <input type="number" id="projects_count" name="projects_count" min="0" required>
+
+            <label for="internship_count">Number of Internships</label>
+            <input type="number" id="internship_count" name="internship_count" min="0" required>
+
+            <label for="internship_company_level">Internship Company Level (1-3)</label>
+            <input type="number" id="internship_company_level" name="internship_company_level" min="1" max="3" required>
+
+            <label for="certification_count">Number of Certifications</label>
+            <input type="number" id="certification_count" name="certification_count" min="0" required>
+
+            <label for="certification_company_level">Certification Company Level (1-3)</label>
+            <input type="number" id="certification_company_level" name="certification_company_level" min="1" max="3" required>
+
+            <label for="technical_skills">Technical Skills</label>
+            <textarea id="technical_skills" name="technical_skills" placeholder="E.g., Python, SQL" required></textarea>
+
+            <label for="tools_known">Tools Known</label>
+            <textarea id="tools_known" name="tools_known" placeholder="E.g., Git, VS Code" required></textarea>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+student_name,student_id,cgpa,coding_skill,communication_skill,aptitude_skill,problem_solving,projects_count,internship_count,internship_company_level,certification_count,certification_company_level,technical_skills,tools_known,placement_probability,readiness_score,placement_status,placement_label
+Aarav Reddy,1,8.2,8.0,7.0,6.0,7.0,3,2,3,2,2,"Python,ML","VSCode,Git",99.62,71.43333333333334,Placed,1
+Ananya Sharma,2,7.6,7.0,8.0,6.0,6.0,2,1,2,3,3,"Java,SQL","Eclipse,Git",98.54,65.33333333333334,Placed,1
+Rohit Kumar,3,6.8,6.0,6.0,5.0,5.0,1,1,1,1,1,"C,DSA",CodeBlocks,12.17,51.533333333333324,Not Placed,0
+Priya Verma,4,8.9,9.0,7.0,8.0,8.0,4,3,3,4,3,"Python,DL","VSCode,Jupyter",100.0,83.2,Placed,1
+Karthik Naidu,5,7.2,7.0,6.0,6.0,6.0,2,2,2,2,2,"Python,SQL",VSCode,92.68,62.26666666666667,Placed,1
+Sneha Iyer,6,9.1,9.0,8.0,8.0,9.0,5,3,3,5,3,"AI,ML","PyCharm,Git",100.0,87.7,Placed,1
+Vamsi Krishna,7,6.5,6.0,5.0,5.0,5.0,1,0,0,1,0,"C,Java",NetBeans,1.12,46.6,Not Placed,0
+Pooja Mehta,8,8.0,8.0,7.0,7.0,7.0,3,2,2,3,2,"Python,NLP","Jupyter,Git",99.59,71.46666666666665,Placed,1
+Rahul Singh,9,7.9,7.0,6.0,7.0,6.0,2,2,2,2,2,"Java,Spring",IntelliJ,96.6,65.16666666666667,Placed,1
+Divya Patel,10,8.6,8.0,8.0,7.0,8.0,4,3,3,4,3,"Python,ML","VSCode,Git",99.99,80.10000000000001,Placed,1
+Suresh Rao,11,6.9,6.0,6.0,5.0,6.0,1,1,1,1,1,C++,TurboC,17.31,53.23333333333333,Not Placed,0
+Neha Gupta,12,8.3,8.0,7.0,7.0,7.0,3,2,2,3,2,"Python,SQL",VSCode,99.65,72.06666666666665,Placed,1
+Arjun Malhotra,13,7.4,7.0,6.0,6.0,6.0,2,1,2,2,2,"Java,DSA",Eclipse,90.51,61.66666666666667,Placed,1
+Kavya Nair,14,9.0,9.0,8.0,8.0,9.0,4,3,3,5,3,"AI,DL",PyCharm,100.0,86.5,Placed,1
+Manoj Kumar,15,6.7,6.0,5.0,5.0,5.0,1,1,1,1,1,C,CodeBlocks,8.86,50.33333333333333,Not Placed,0
+Ritika Jain,16,8.4,8.0,7.0,7.0,8.0,3,2,3,3,2,"Python,ML",VSCode,99.9,75.43333333333332,Placed,1
+Aditya Joshi,17,7.1,7.0,6.0,6.0,6.0,2,1,2,2,2,"Java,SQL",IntelliJ,89.15,61.06666666666668,Placed,1
+Meghana Rao,18,8.7,9.0,8.0,7.0,8.0,4,3,3,4,3,"Python,AI","Jupyter,Git",100.0,82.30000000000001,Placed,1
+Nikhil Verma,19,6.4,6.0,5.0,5.0,5.0,1,0,0,1,0,C,TurboC,1.06,46.4,Not Placed,0
+Ishita Bose,20,8.1,8.0,7.0,7.0,7.0,3,2,2,3,2,"Python,NLP",VSCode,99.61,71.66666666666666,Placed,1
+Harsha Teja,21,7.8,7.0,7.0,6.0,7.0,2,2,2,2,2,"Python,Flask",VSCode,97.08,65.96666666666667,Placed,1
+Lavanya Sri,22,8.5,8.0,8.0,7.0,8.0,4,3,3,4,3,"ML,DL",PyCharm,99.99,79.9,Placed,1
+Sai Kiran,23,6.6,6.0,5.0,5.0,5.0,1,1,1,1,1,C++,CodeBlocks,8.47,50.13333333333333,Not Placed,0
+Bhavya Reddy,24,8.9,9.0,8.0,8.0,9.0,5,3,3,5,3,"AI,Python","VSCode,Git",100.0,87.3,Placed,1
+Chaitanya Rao,25,7.0,7.0,6.0,6.0,6.0,2,1,2,2,2,Java,NetBeans,88.66,60.866666666666674,Placed,1
+Swathi Menon,26,8.2,8.0,7.0,7.0,7.0,3,2,2,3,2,"Python,SQL",VSCode,99.63,71.86666666666666,Placed,1
+Akash Mishra,27,6.3,6.0,5.0,5.0,5.0,1,0,0,1,0,C,TurboC,1.01,46.2,Not Placed,0
+Keerthana Devi,28,9.2,9.0,8.0,9.0,9.0,5,3,3,5,3,"AI,ML","PyCharm,Git",100.0,89.4,Placed,1
+Ravi Shankar,29,7.5,7.0,6.0,6.0,6.0,2,2,2,2,2,"Java,SQL",IntelliJ,93.63,62.866666666666674,Placed,1
+Aishwarya Pillai,30,8.6,8.0,8.0,7.0,8.0,4,3,3,4,3,"Python,DL","VSCode,Jupyter",99.99,80.10000000000001,Placed,1
+Rupa Reddy,31,8.75,9.0,9.0,8.0,7.0,2,2,2,3,3,"Html,sql",vscode,99.97,78.13333333333333,Placed,1
+Hema,32,7.2,5.0,4.0,6.0,4.0,2,1,1,2,1,"html,css","vscode,excel",10.14,49.93333333333333,Not Placed,0
+Rocky,60,9.5,8.0,8.0,7.0,7.0,2,1,1,2,1,"java,python,html",springboot,97.64,70.53333333333335,Placed,1
+Kiranmayi,33,9.2,8.0,9.0,8.0,8.0,3,2,2,2,3,"python,sql,web","vscode,git,github",99.97,78.93333333333334,Placed,1
+Nirusha,34,8.2,7.0,8.0,8.0,6.0,2,2,2,3,2,"java,html,css","vscode,excel",99.3,69.86666666666666,Placed,1
+Peddyreddy Hema,98,9.2,9.0,10.0,9.0,8.0,2,2,3,4,2,"Html,css,javascript,python,Sql","vscode,excel",99.99,84.63333333333334,Placed,1
+Mangire Nirusha,86,8.2,7.0,9.0,8.0,6.0,2,2,2,3,2,"python,sql,html",vs code,99.48,70.86666666666666,Placed,1
+Mangire Nirusha,86,8.2,7.0,9.0,8.0,8.0,4,2,3,3,2,"python,sql,html,flask,ml","vs code,git",99.95,77.53333333333333,Placed,1
+Mangala Bhagyasree,85,7.8,8.0,8.0,8.0,8.0,2,2,2,3,2,"python,sql,html,flask,ml","vs code,git",99.79,74.06666666666665,Placed,1
+P.Yashwitha,100,8.2,7.0,9.0,8.0,6.0,2,2,2,3,2,"python,sql,html,css",vs code,99.48,70.86666666666666,Placed,1
+Pradeepa,84,8.2,7.0,9.0,8.0,6.0,2,2,2,3,2,"python,sql,html",vs code,99.48,70.86666666666666,Placed,1

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto',sans-serif; }
+body { background: #f0f2f5; }
+
+.container{
+    max-width:1200px;
+    margin:50px auto;
+    padding:30px;
+    background:#fff;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:30px;
+    color:#6c5ce7;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:#f5f6fa;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+.card h3{
+    margin:0;
+    font-size:16px;
+    color:#636e72;
+}
+
+.card p{
+    font-size:20px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.success{color:#00b894;}
+.danger{color:#d63031;}
+.primary{color:#6c5ce7;}
+
+/* Table */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th, table td{
+    padding:12px;
+    border-bottom:1px solid #ccc;
+    text-align:center;
+}
+
+table th{
+    background:#6c5ce7;
+    color:#fff;
+    font-weight:500;
+}
+
+table tr:nth-child(even){ background:#f9f9f9; }
+table tr:hover{ background:#dfe6e9; }
+
+/* Footer */
+.footer{
+    text-align:center;
+    margin-top:30px;
+}
+
+.footer a{
+    background:#6c5ce7;
+    color:#fff;
+    padding:12px 28px;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Student Dashboard</h2>
+
+    <!-- Info Cards -->
+    <div class="grid">
+        <div class="card">
+            <h3>Readiness Score</h3>
+            <p class="primary">{{ readiness_score|round(2) }}</p>
+        </div>
+        <div class="card">
+            <h3>Placement Probability</h3>
+            <p class="success">{{ placement_probability|round(2) }}%</p>
+        </div>
+        <div class="card">
+            <h3>Placement Status</h3>
+            <p class="{% if placement_status=='Placed' %}success{% else %}danger{% endif %}">{{ placement_status }}</p>
+        </div>
+        <div class="card">
+            <h3>Career Path</h3>
+            <p class="primary">{{ career_path }}</p>
+        </div>
+    </div>
+
+    <!-- Strengths & Weaknesses -->
+    <div class="grid">
+        <div class="card">
+            <h3>Top 2 Strengths</h3>
+            <p class="success">{{ strengths[0] }}, {{ strengths[1] }}</p>
+        </div>
+        <div class="card">
+            <h3>Top 2 Weaknesses</h3>
+            <p class="danger">{{ weaknesses[0] }}, {{ weaknesses[1] }}</p>
+        </div>
+        <div class="card">
+            <h3>Eligible Companies</h3>
+            <p class="primary">
+                {% for c in eligible_companies %}
+                    {{ c }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Student Info Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Attribute</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Name</td><td>{{ student.student_name }}</td></tr>
+            <tr><td>Student ID</td><td>{{ student.student_id }}</td></tr>
+            <tr><td>CGPA</td><td>{{ student.cgpa }}</td></tr>
+            <tr><td>Coding Skill</td><td>{{ student.coding_skill }}</td></tr>
+            <tr><td>Communication Skill</td><td>{{ student.communication_skill }}</td></tr>
+            <tr><td>Aptitude Skill</td><td>{{ student.aptitude_skill }}</td></tr>
+            <tr><td>Problem Solving</td><td>{{ student.problem_solving }}</td></tr>
+            <tr><td>Projects Count</td><td>{{ student.projects_count }}</td></tr>
+            <tr><td>Internship Count</td><td>{{ student.internship_count }}</td></tr>
+            <tr><td>Internship Company Level</td><td>{{ student.internship_company_level }}</td></tr>
+            <tr><td>Certification Count</td><td>{{ student.certification_count }}</td></tr>
+            <tr><td>Certification Company Level</td><td>{{ student.certification_company_level }}</td></tr>
+            <tr><td>Technical Skills</td><td>{{ student.technical_skills }}</td></tr>
+            <tr><td>Tools Known</td><td>{{ student.tools_known }}</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Logout -->
+    <div class="footer">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto',sans-serif; }
+body {
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#89f7fe,#66a6ff);
+}
+
+.container{
+    background:#fff;
+    padding:40px 50px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    width:400px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:30px;
+    color:#6c5ce7;
+}
+
+form label{
+    display:block;
+    margin:10px 0 5px;
+    font-weight:500;
+}
+
+form input, form select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+form button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#6c5ce7;
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+form button:hover{
+    background:#5a4fcf;
+}
+
+.error{
+    color:#d63031;
+    margin-bottom:15px;
+    text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        <label for="role">Select Role:</label>
+        <select name="role" id="role" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="admin">Admin</option>
+        </select>
+
+        <div id="student-id-div" style="display:none;">
+            <label for="user_id">Student ID:</label>
+            <input type="number" name="user_id" id="user_id" placeholder="Enter your Student ID">
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<script>
+// Show Student ID field only if Student is selected
+const roleSelect = document.getElementById("role");
+const studentDiv = document.getElementById("student-id-div");
+
+roleSelect.addEventListener("change", function(){
+    if(this.value === "student"){
+        studentDiv.style.display = "block";
+        document.getElementById("user_id").required = true;
+    } else {
+        studentDiv.style.display = "none";
+        document.getElementById("user_id").required = false;
+    }
+});
+</script>
+
+</body>
+</html>

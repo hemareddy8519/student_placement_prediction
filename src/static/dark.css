@@ -1,0 +1,16 @@
+body{
+  background:#1e272e;
+  color:#f5f6fa;
+}
+
+.card, table, .form-box{
+  background:#2f3640;
+  color:#f5f6fa;
+}
+
+h2, h3{color:#9c88ff;}
+
+th{
+  background:#353b48;
+  color:#fff;
+}
