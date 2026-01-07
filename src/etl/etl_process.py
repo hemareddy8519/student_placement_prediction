@@ -65,7 +65,7 @@ def transform_data(df):
         df[col] = df[col].clip(0, 10)
 
     for col in count_cols:
-        df[col] = df[col].clip(0, 5)
+        df[col] = df[col].clip(0, 100)
 
     # -------------------------------
     # 5. Encode Placement Status (TARGET)

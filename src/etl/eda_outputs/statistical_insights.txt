@@ -1,0 +1,15 @@
+KEY STATISTICAL INSIGHTS
+===================================
+
+Total Students: 10000
+Placement Rate: 27.22%
+Average CGPA: 8.00
+Average Readiness Score: 66.61
+
+Average Skills:
+- Coding Skill: 7.03
+- Communication Skill: 6.51
+- Aptitude Skill: 6.99
+- Problem Solving: 7.04
+
+Top Correlated Features with Placement:
