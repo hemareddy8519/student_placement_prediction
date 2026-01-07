@@ -1,167 +1,237 @@
 # =========================================================
-# STUDENT PLACEMENT PIPELINE
-# Baseline Table for 3 Models + Logistic Regression for advanced ops
+# STUDENT PLACEMENT PIPELINE – FINAL SAFE VERSION
 # =========================================================
 
 import os
 import pickle
-import pandas as pd
 import numpy as np
+import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from sklearn.model_selection import train_test_split, learning_curve, GridSearchCV, StratifiedKFold, cross_val_score
+from sklearn.model_selection import (
+    train_test_split, GridSearchCV, learning_curve
+)
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score,
-    confusion_matrix, ConfusionMatrixDisplay, roc_curve
+    accuracy_score, precision_score, recall_score,
+    f1_score, roc_auc_score, confusion_matrix,
+    ConfusionMatrixDisplay, roc_curve
 )
-from scipy.stats import ttest_rel
 
 # -------------------- CONFIG ----------------------------
 DATA_PATH = "notebook/final_transformed_data.csv"
 OUTPUT_DIR = "notebook/ml_outputs"
+TARGET = "placement_status"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# -------------------- LOAD DATA ------------------------
+# -------------------- LOAD DATA -------------------------
 df = pd.read_csv(DATA_PATH)
-X = pd.get_dummies(df.drop("placement_status", axis=1), drop_first=True)
-y = df["placement_status"]
+X = pd.get_dummies(df.drop(TARGET, axis=1), drop_first=True)
+y = df[TARGET]
 
-# -------------------- TRAIN-TEST SPLIT -----------------
+# -------------------- TRAIN-TEST SPLIT ------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, stratify=y, random_state=42
 )
 
-# -------------------- SCALING --------------------------
+# -------------------- SCALING ---------------------------
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# -------------------- BASELINE MODELS ------------------
-baseline_models = {
-    "Logistic Regression": LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42),
-    "Decision Tree": DecisionTreeClassifier(max_depth=6, min_samples_leaf=5, class_weight='balanced', random_state=42),
+# -------------------- MODELS ----------------------------
+models = {
+    "Logistic Regression": LogisticRegression(
+        class_weight="balanced", max_iter=1000
+    ),
+    "Decision Tree": DecisionTreeClassifier(
+    max_depth=3,                 # VERY IMPORTANT
+    min_samples_split=20,
+    min_samples_leaf=10,
+    class_weight="balanced",
+    random_state=42
+    ),
     "Random Forest": RandomForestClassifier(
         n_estimators=100,
         max_depth=6,
         min_samples_leaf=3,
-        min_samples_split=5,
-        max_features="sqrt",
-        class_weight='balanced',
-        random_state=42,
-        n_jobs=-1
+        class_weight="balanced",
+        random_state=42
     )
 }
 
-baseline_results = []
+# -------------------- PARAMETER GRIDS -------------------
+param_grids = {
+    "Logistic Regression": {"C": [0.5, 1]},
+    "Decision Tree": {"max_depth": [5, 6]},
+    "Random Forest": {"max_depth": [6, 8]}
+}
 
-for name, model in baseline_models.items():
-    if name == "Logistic Regression":
-        model.fit(X_train_scaled, y_train)
-        y_pred = model.predict(X_test_scaled)
-        y_prob = model.predict_proba(X_test_scaled)[:,1]
-    else:
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        y_prob = model.predict_proba(X_test)[:,1]
+results = []
 
-    acc = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    roc = roc_auc_score(y_test, y_prob)
+# -------------------- TRAIN + TUNE ----------------------
+for name, model in models.items():
+    print(f"\n=== Training {name} ===")
 
-    baseline_results.append([name, acc, roc, f1])
+    X_tr = X_train_scaled if name == "Logistic Regression" else X_train
+    X_te = X_test_scaled if name == "Logistic Regression" else X_test
 
-# Save baseline comparison table (3 models)
-baseline_df = pd.DataFrame(baseline_results, columns=["Model","Accuracy","ROC_AUC","F1"])
-baseline_df.to_csv(os.path.join(OUTPUT_DIR,"baseline_model_comparison.csv"), index=False)
-print("\n✅ Baseline Model Comparison Table (3 models) created.")
+    grid = GridSearchCV(
+        model,
+        param_grids[name],
+        cv=3,
+        scoring="f1",
+        n_jobs=1      # 🔥 IMPORTANT (prevents memory crash)
+    )
+    grid.fit(X_tr, y_train)
+    print("Best Parameters:", grid.best_params_)
 
-# -------------------- ADVANCED OPERATIONS FOR LOGISTIC REGRESSION ------------------
-lr = baseline_models["Logistic Regression"]
+    best_model = grid.best_estimator_
+    y_pred = best_model.predict(X_te)
+    y_prob = best_model.predict_proba(X_te)[:, 1]
 
-# Confusion Matrix
-cm = confusion_matrix(y_test, lr.predict(X_test_scaled))
-disp = ConfusionMatrixDisplay(cm, display_labels=["Not Placed","Placed"])
-disp.plot(cmap="Blues")
-plt.title("Logistic Regression Confusion Matrix")
-plt.savefig(os.path.join(OUTPUT_DIR,"confusion_matrix_LogisticRegression.png"))
-plt.close()
+    results.append({
+        "Model": name,
+        "Accuracy": accuracy_score(y_test, y_pred),
+        "Precision": precision_score(y_test, y_pred),
+        "Recall": recall_score(y_test, y_pred),
+        "F1": f1_score(y_test, y_pred),
+        "ROC_AUC": roc_auc_score(y_test, y_prob),
+        "Estimator": best_model
+    })
 
-# ROC Curve
-fpr, tpr, _ = roc_curve(y_test, lr.predict_proba(X_test_scaled)[:,1])
-plt.plot(fpr, tpr, label="Logistic Regression")
+# -------------------- PRINT COMPARISON -------------------
+comparison_df = pd.DataFrame(results).drop(columns=["Estimator"])
+print("\n=== MODEL COMPARISON ===")
+print(comparison_df.to_string(index=False))
+
+# -------------------- CONFUSION MATRIX + ROC -------------
+plt.figure(figsize=(8,6))
+for r in results:
+    model = r["Estimator"]
+    name = r["Model"]
+    X_eval = X_test_scaled if name == "Logistic Regression" else X_test
+
+    y_pred = model.predict(X_eval)
+    y_prob = model.predict_proba(X_eval)[:,1]
+
+    # Confusion Matrix
+    cm = confusion_matrix(y_test, y_pred)
+    disp = ConfusionMatrixDisplay(cm, display_labels=["Not Placed","Placed"])
+    disp.plot(cmap="Blues")
+    plt.title(f"{name} Confusion Matrix")
+    plt.savefig(os.path.join(OUTPUT_DIR, f"cm_{name.replace(' ','')}.png"))
+    plt.close()
+
+    # ROC Curve
+    fpr, tpr, _ = roc_curve(y_test, y_prob)
+    plt.plot(fpr, tpr, label=name)
+
 plt.plot([0,1],[0,1],'--')
-plt.title("Logistic Regression ROC Curve")
+plt.title("ROC Curve Comparison")
 plt.legend()
-plt.savefig(os.path.join(OUTPUT_DIR,"roc_curve_LogisticRegression.png"))
+plt.savefig(os.path.join(OUTPUT_DIR, "roc_comparison.png"))
 plt.close()
 
-# Feature Importance
-feat_df = pd.DataFrame({"Feature": X.columns, "Coefficient": lr.coef_[0]}).sort_values(by="Coefficient", key=abs, ascending=False)
-feat_df.to_csv(os.path.join(OUTPUT_DIR,"feature_importance_LogisticRegression.csv"), index=False)
+# -------------------- LEARNING CURVE ---------------------
+for r in results:
+    model = r["Estimator"]
+    name = r["Model"]
+    X_tr = X_train_scaled if name == "Logistic Regression" else X_train
 
-# Learning Curve (fast)
-train_sizes, train_scores, test_scores = learning_curve(
-    lr, X_train_scaled, y_train, cv=3, scoring='accuracy', train_sizes=np.linspace(0.2,1.0,3)
-)
-plt.plot(train_sizes, train_scores.mean(axis=1), label="Train")
-plt.plot(train_sizes, test_scores.mean(axis=1), label="Validation")
-plt.title("Logistic Regression Learning Curve")
-plt.legend()
-plt.savefig(os.path.join(OUTPUT_DIR,"learning_curve_LogisticRegression.png"))
-plt.close()
+    train_sizes, train_scores, test_scores = learning_curve(
+        model, X_tr, y_train, cv=3, scoring="accuracy"
+    )
 
-# Hyperparameter tuning (C)
-param_grid = {"C":[0.1,0.5,1,5]}
-grid = GridSearchCV(LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42),
-                    param_grid, cv=3, scoring='f1', n_jobs=-1)
-grid.fit(X_train_scaled, y_train)
-best_lr = grid.best_estimator_
-print("\nBest Logistic Regression Params:", grid.best_params_)
+    plt.plot(train_sizes, train_scores.mean(axis=1), label="Train")
+    plt.plot(train_sizes, test_scores.mean(axis=1), label="Validation")
+    plt.title(f"Learning Curve - {name}")
+    plt.legend()
+    plt.savefig(os.path.join(OUTPUT_DIR, f"lc_{name.replace(' ','')}.png"))
+    plt.close()
 
-# Statistical validation
-cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
-lr_scores = cross_val_score(best_lr, X_train_scaled, y_train, cv=cv)
-t_stat, p_val = ttest_rel(lr_scores, lr_scores)  # comparing LR to itself
-with open(os.path.join(OUTPUT_DIR,"statistical_test.txt"),"w") as f:
-    f.write(f"Paired t-test p-value: {p_val}\n")
-
-# Business threshold optimization
+# -------------------- BUSINESS THRESHOLD -----------------
 gain, cost = 10000, 5000
+best_lr = [r for r in results if r["Model"]=="Logistic Regression"][0]["Estimator"]
+
 y_prob_lr = best_lr.predict_proba(X_test_scaled)[:,1]
-thresholds = np.linspace(0.1,0.9,41)
-business_scores = []
+thresholds = np.linspace(0.1, 0.9, 41)
 
+scores = []
 for t in thresholds:
-    y_pred_thresh = (y_prob_lr >= t).astype(int)
-    TP = ((y_test==1) & (y_pred_thresh==1)).sum()
-    FP = ((y_test==0) & (y_pred_thresh==1)).sum()
-    score = TP*gain - FP*cost
-    business_scores.append(score)
+    y_t = (y_prob_lr >= t).astype(int)
+    TP = ((y_test==1) & (y_t==1)).sum()
+    FP = ((y_test==0) & (y_t==1)).sum()
+    scores.append(TP*gain - FP*cost)
 
-best_idx = np.argmax(business_scores)
-best_threshold = thresholds[best_idx]
-best_score = business_scores[best_idx]
+best_t = thresholds[np.argmax(scores)]
 
-with open(os.path.join(OUTPUT_DIR,"business_optimization.txt"), "w") as f:
-    f.write(f"Optimal threshold: {best_threshold}\nExpected Business Gain: {best_score}\n")
+# Business score at default threshold 0.5
+y_default = (y_prob_lr >= 0.5).astype(int)
+TP_d = ((y_test==1) & (y_default==1)).sum()
+FP_d = ((y_test==0) & (y_default==1)).sum()
+default_score = TP_d*gain - FP_d*cost
 
-# Metrics at optimal threshold
-y_pred_opt = (y_prob_lr >= best_threshold).astype(int)
-acc_opt = accuracy_score(y_test, y_pred_opt)
-prec_opt = precision_score(y_test, y_pred_opt)
-rec_opt = recall_score(y_test, y_pred_opt)
-f1_opt = f1_score(y_test, y_pred_opt)
+print(f"Business Score @0.5 Threshold: {default_score}")
+print(f"Business Score @Optimal Threshold ({best_t}): {max(scores)}")
 
-with open(os.path.join(OUTPUT_DIR,"business_metrics_at_threshold.txt"), "w") as f:
-    f.write(f"Accuracy: {acc_opt}\nPrecision: {prec_opt}\nRecall: {rec_opt}\nF1 Score: {f1_opt}\n")
+# -------------------- BEST MODEL -------------------------
+# Ignore Decision Tree for final deployment
+final_candidates = [
+    r for r in results if r["Model"] != "Decision Tree"
+]
 
-# Save final model
-pickle.dump(best_lr, open(os.path.join(OUTPUT_DIR,"final_model_LogisticRegression.pkl"),"wb"))
+best_model = max(
+    final_candidates,
+    key=lambda x: (x["ROC_AUC"], x["F1"])
+)
 
-print("\n✅ Pipeline completed. Baseline table + Logistic Regression advanced operations done.")
+
+
+pickle.dump(
+    best_model["Estimator"],
+    open(os.path.join(OUTPUT_DIR, "final_model.pkl"), "wb")
+)
+
+print(f"\n✅ Best Model Selected: {best_model['Model']}")
+print(f"✅ Optimal Business Threshold: {best_t}")
+# -------------------- FEATURE IMPORTANCE -----------------
+if best_model["Model"] == "Random Forest":
+    importances = best_model["Estimator"].feature_importances_
+    feature_importance = pd.Series(
+        importances, index=X.columns
+    ).sort_values(ascending=False)
+
+    print("\nTop 10 Important Features:")
+    print(feature_importance.head(10))
+
+    plt.figure(figsize=(8,5))
+    feature_importance.head(10).plot(kind="bar")
+    plt.title("Top 10 Feature Importances - Random Forest")
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, "feature_importance_rf.png"))
+    plt.close()
+# -------------------- FEATURE IMPORTANCE (LOGISTIC REGRESSION) -----------------
+if best_model["Model"] == "Logistic Regression":
+
+    coef = best_model["Estimator"].coef_[0]
+
+    feature_importance = pd.Series(
+        coef, index=X.columns
+    ).sort_values(key=abs, ascending=False)
+
+    print("\nTop 10 Important Features (Logistic Regression):")
+    print(feature_importance.head(10))
+
+    plt.figure(figsize=(8,5))
+    feature_importance.head(10).plot(kind="bar")
+    plt.title("Top 10 Feature Importance - Logistic Regression")
+    plt.ylabel("Coefficient Value")
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, "feature_importance_logistic.png"))
+    plt.close()

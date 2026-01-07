@@ -1,2 +1,0 @@
-Optimal threshold: 0.18
-Expected Business Gain: 3940000
