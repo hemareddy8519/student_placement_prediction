@@ -1,0 +1,5 @@
+student_id,student_name,cgpa,coding_skill,communication_skill,aptitude_skill,problem_solving,projects_count,internship_count,certification_count,internship_company_level,certification_company_level,technical_skills,tools_known
+32,sudarshan,8.0,7.0,8.0,8.0,8.0,3,3,2,2,2,"python,java","vs code,git"
+12,Nagaraj,8.6,8.0,9.0,9.0,8.0,3,3,4,2,3,"python,html,css,js","vs code,git "
+98,Hema,9.19,9.0,9.0,8.0,8.0,3,2,4,2,3,"python,html,css,js,ml","vs code,excel,git"
+33,Dhanush,7.5,9.0,10.0,8.0,8.0,4,40,4,2,2,"python,DSA,Html,css,js","vs code,git,excel"
